@@ -1,0 +1,48 @@
+sequenceDiagram
+    actor Cliente
+    participant Interface as Interface do Sistema
+    participant Controladora as Controladora de Carteira
+    participant Carteira
+    participant Ação
+
+    Note over Cliente,Ação: Pré-condição: Usuário está logado no sistema
+
+    Cliente->>Interface: Acessa opção de visualizar carteira de ações
+    Interface->>Controladora: Solicita dados da carteira
+    Controladora->>Carteira: Obtém lista de ações do usuário
+    Carteira->>Ação: Obtém informações atualizadas das ações
+    Ação-->>Carteira: Retorna informações das ações
+    Carteira-->>Controladora: Retorna lista de ações com informações
+    Controladora->>Interface: Envia dados da carteira
+    Interface-->>Cliente: Exibe lista de ações com informações relevantes (RF26)
+
+    Interface->>Controladora: Solicita opções de agrupamento
+    Controladora-->>Interface: Envia opções de agrupamento
+    Interface-->>Cliente: Mostra opções de agrupar ações (RF28) e criar grupos (RF29)
+
+    Interface->>Controladora: Solicita cotações atualizadas
+    Controladora->>Ação: Obtém cotações atualizadas
+    Ação-->>Controladora: Retorna cotações
+    Controladora-->>Interface: Envia cotações atualizadas
+    Interface-->>Cliente: Exibe cotações das ações em carteira (RF34)
+
+    Interface-->>Cliente: Mostra botão de "negócio rápido" para ações em carteira
+
+    Note over Cliente,Ação: Fluxos Alternativos
+    Cliente->>Interface: Seleciona realizar OC/OV
+    Interface-->>Cliente: Redireciona para tela de OC/OV (RF27)
+
+    Cliente->>Interface: Solicita extrato de ações
+    Interface->>Controladora: Requisita extrato de negócios
+    Controladora->>Carteira: Obtém histórico de negócios
+    Carteira-->>Controladora: Retorna histórico
+    Controladora-->>Interface: Envia extrato de negócios
+    Interface-->>Cliente: Exibe extrato das ações com negócios realizados (RF33)
+
+    Cliente->>Interface: Personaliza visualização de cotações
+    Interface-->>Cliente: Atualiza exibição conforme personalização (RNF35)
+
+    Note over Cliente,Ação: Fluxo de Exceção
+    Interface->>Controladora: Erro na obtenção dos dados
+    Controladora-->>Interface: Retorna erro
+    Interface-->>Cliente: Exibe mensagem de erro e sugere tentar novamente mais tarde

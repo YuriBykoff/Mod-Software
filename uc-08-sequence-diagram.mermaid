@@ -1,0 +1,53 @@
+sequenceDiagram
+    actor Cliente
+    participant Interface as Interface do Sistema
+    participant Controladora as Controladora de Ordens
+    participant Ordem
+
+    Note over Cliente,Ordem: Pré-condição: Usuário está logado no sistema
+
+    Cliente->>Interface: Acessa opção de visualizar ordens
+    Interface->>Controladora: Solicita lista de ordens
+    Controladora->>Ordem: Obtém OC e OV do usuário
+    Ordem-->>Controladora: Retorna lista de OC e OV
+    Controladora-->>Interface: Envia lista de ordens
+    Interface-->>Cliente: Exibe lista de ordens de compra (OC) e venda (OV)
+
+    Interface->>Controladora: Solicita status das ordens
+    Controladora->>Ordem: Obtém status atualizado
+    Ordem-->>Controladora: Retorna status
+    Controladora-->>Interface: Envia status das ordens
+    Interface-->>Cliente: Mostra status das OC (RF11) e OV (RF20)
+
+    Cliente->>Interface: Solicita histórico de ordens
+    Interface->>Controladora: Requisita histórico
+    Controladora->>Ordem: Obtém histórico de OC e OV
+    Ordem-->>Controladora: Retorna histórico
+    Controladora-->>Interface: Envia histórico de ordens
+    Interface-->>Cliente: Permite consulta do histórico de OC (RF13) e OV (RF22)
+
+    Note over Cliente,Ordem: Fluxos Alternativos
+
+    Alt Visualizar OC específica
+        Cliente->>Interface: Solicita OC de ação específica
+        Interface->>Controladora: Requisita OC da ação
+        Controladora->>Ordem: Filtra OC por ação
+        Ordem-->>Controladora: Retorna OC filtradas
+        Controladora-->>Interface: Envia OC da ação específica
+        Interface-->>Cliente: Exibe OC relacionadas a uma ação específica (RF15)
+    else Visualizar OV específica
+        Cliente->>Interface: Solicita OV de ação específica
+        Interface->>Controladora: Requisita OV da ação
+        Controladora->>Ordem: Filtra OV por ação
+        Ordem-->>Controladora: Retorna OV filtradas
+        Controladora-->>Interface: Envia OV da ação específica
+        Interface-->>Cliente: Exibe OV relacionadas a uma ação específica (RF24)
+    end
+
+    Note over Cliente,Ordem: Fluxo de Exceção
+
+    Interface->>Controladora: Erro na obtenção dos dados
+    Controladora-->>Interface: Retorna erro
+    Interface-->>Cliente: Exibe mensagem de erro e sugere tentar novamente mais tarde
+
+    Note over Cliente,Ordem: Pós-condição: Ordens de compra e venda exibidas com status atualizado
